@@ -17,5 +17,4 @@ def getSignFromPoC(codePath):
         match = re.search(pattern, line)
         if match:
           pathList.append(match.group(2))
-  return pathList
-  
+  return list(set(pathList))
