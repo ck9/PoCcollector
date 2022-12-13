@@ -1,2 +1,5 @@
 requests
 progressbar2
+pysqlite3
+requests
+python-dotenv
