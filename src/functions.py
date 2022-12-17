@@ -1,13 +1,11 @@
 import os, re, json
-import sqlite3, requests
+import sqlite3, requests, yaml
 from dotenv import load_dotenv
 from datetime import datetime
 from nvd.main import getCVEinfo
 
 thisPath = os.path.dirname(__file__)
 load_dotenv(os.path.join(thisPath, '../.env'))
-
-
 
 def getSignFromPoC(codePath):
   pathList = []
@@ -161,5 +159,33 @@ def notifySlack(PoCInfo):
       'link_names': 1,
     }),)
 
-createPoCDB()
 
+def cve2yaml(cve):
+    db_conn = connectPoCDB()
+    c = db_conn.cursor()
+    c.execute('SELECT * FROM PoC WHERE cveid = ?', (cve,))
+    if not c.fetchone():
+      print(f'[INFO] {cve} is not in PoC database')
+      return
+    print('\n[INFO] Generate YAML format')
+    signs = []
+    pocurls = []
+    pocids = []
+    c.execute('SELECT * FROM PoC WHERE cveid = ?', (cve,))
+    for row in c.fetchall():
+      print(f'[INFO] PoC URL: {row[2]}')
+      pocurls.append(row[2])
+      pocids.append(row[0])
+    for pocid in pocids:
+      c.execute('SELECT * FROM Signature WHERE pocid = ?', (pocid,))
+      for signrow in c.fetchall():
+        signs.append(signrow[0])
+    if not signs:
+      print(f'[INFO] Signature is not found')
+      print(f'[INFO] Please add signature yourself')
+      print(f'[PoCList]\n' + '\n'.join(pocurls))
+      signs.append('')
+    memoStr = ', '.join(pocurls)
+    author =  ''
+    obj = [{'author': author, 'condition': signs, 'memo': memoStr, 'name': cve, 'tag': cve}]
+    print('\n'+yaml.dump(obj))
