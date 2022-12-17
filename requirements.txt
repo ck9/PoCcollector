@@ -3,3 +3,4 @@ progressbar2
 pysqlite3
 requests
 python-dotenv
+beautifulsoup4
