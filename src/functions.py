@@ -58,9 +58,8 @@ def getPoCurlList(db_conn):
 #   ]
 # }
 def insertPoCDB(PoCinfo, db_conn):
-  if 'CVE' not in PoCinfo or 'url' not in PoCinfo or 'created_at' not in PoCinfo or 'signatures' not in PoCinfo:
+  if 'cve' not in PoCinfo or 'url' not in PoCinfo or 'created_at' not in PoCinfo or 'signatures' not in PoCinfo:
     return
-
   c = db_conn.cursor()
   # if cveid is not in CVE table, insert cveid info
   if PoCinfo['CVE'] != 'None':
