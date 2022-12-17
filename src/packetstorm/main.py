@@ -14,7 +14,7 @@ def update_pstorm():
   print("Downloading PoC from PacketStorm...")
   html = requests.get('https://packetstormsecurity.com/files/tags/exploit/').text
   max_page = int(re.findall(r'Page 1 of ([0-9,]+)', html)[0].replace(',', ''))
-  p = 4
+  p = 1
   if os.path.isfile(os.path.join(thisDir, 'PoC-in-PacketStorm.json')):
     with open(os.path.join(thisDir, 'PoC-in-PacketStorm.json'), 'r') as f:
       PoCdata = json.load(f)
