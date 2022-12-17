@@ -105,5 +105,3 @@ def update_pstorm():
       }
       insertPoCDB(db_conn, PoCinfo)
   closePoCDB(db_conn)
-
-update_pstorm()

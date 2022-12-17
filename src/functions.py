@@ -48,7 +48,7 @@ def getPoCurlList(db_conn):
   return urlList
 
 # PoCinfo = {
-#   "CVE": "CVE-2021-20837",
+#   "cve": "CVE-2021-20837",
 #   "url": "https://example.com",
 #   "path": "/path/to/poc",
 #   "description": "descriptionText",
@@ -110,8 +110,8 @@ def getnewPredictedPoC(db_conn):
     newCVEs[cverow[0]]['PoC'] = []
     newCVEs[cverow[0]]['description'] = ''
     for row in c.fetchall():
-      newCVEs[row[1]]['PoC'].append(row[2])
-      newCVEs[row[1]]['description'] += row[4] + '\n\n'
+      newCVEs[cverow[0]]['PoC'].append(row[2])
+      newCVEs[cverow[0]]['description'] += row[4] + '\n\n'
     newCVEs[cverow[0]]['description'] = newCVEs[cverow[0]]['description'].rstrip('\n\n')
     c.execute('SELECT * FROM Signature WHERE pocid IN (SELECT pocid FROM PoC WHERE cveid = ?)', (cverow[0],))
     newCVEs[cverow[0]]['Signatures'] = []

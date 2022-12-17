@@ -65,6 +65,3 @@ def update_github():
         }
         insertPoCDB(PoCinfo, db_conn)
   closePoCDB(db_conn)
-
-
-update_github()
