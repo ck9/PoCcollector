@@ -153,6 +153,8 @@ def notifySlack(PoCInfo):
     txt += '\nSignature:\n'
     for signature in PoCInfo['Signatures']:
       txt += f'{signature}\n'
+    txt += '\n\nYAML:\n'
+    txt += f'```{cve2yaml(PoCInfo["CVE-ID"])}```'
   requests.post(webHookURL, 
     data=json.dumps({
       'text': txt,
@@ -188,4 +190,4 @@ def cve2yaml(cve):
     memoStr = ', '.join(pocurls)
     author =  ''
     obj = [{'author': author, 'condition': signs, 'memo': memoStr, 'name': cve, 'tag': cve}]
-    print('\n'+yaml.dump(obj))
+    return yaml.dump(obj)

@@ -8,4 +8,4 @@ if not re.match(r'^CVE-\d{4}-\d{4,}$', cve):
   print('Invalid CVE-ID')
   exit(1)
 
-cve2yaml(cve)
+print ("\n"+cve2yaml(cve))
