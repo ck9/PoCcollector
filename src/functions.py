@@ -7,19 +7,21 @@ from nvd.main import getCVEinfo
 thisPath = os.path.dirname(__file__)
 load_dotenv(os.path.join(thisPath, '../.env'))
 
+
+
 def getSignFromPoC(codePath):
   pathList = []
   if not os.path.isfile(codePath):
     return pathList
   with open(codePath, 'r') as f:
     code = f.read()
-    pattern = r'[\'"](\{.+?\})*((\/[\w:%#\$&\?\(\)~\.=\+\-]+){2,})(\{.+?\})*[\'"]'
+    pattern = r'[\'"](\{\w+?\})*((\/[\w:%#\$&\?\(\)~\.=\+\-]+){2,})(\{\w+?\})*[\'"]'
     for line in code.splitlines():
       match = re.search(pattern, line)
       if match:
         pathList.append(match.group(2))
     if not pathList:
-      pattern = r'^([A-Z]+)\s((\/[\w:%#\$&\?\(\)~\.=\+\-]+)+)\sHTTP'
+      pattern = r'^([A-Z]+)\s((\/[\w:%#\$&\?\(\)~\.=\+\-]+){1,})\sHTTP'
       for line in code.splitlines():
         match = re.search(pattern, line)
         if match:
@@ -43,7 +45,6 @@ def getPoCurlList(db_conn):
   c.execute('SELECT url FROM PoC ')
   for row in c.fetchall():
     urlList.append(row[0])
-  closePoCDB(db_conn)
   return urlList
 
 # PoCinfo = {
@@ -62,17 +63,17 @@ def insertPoCDB(PoCinfo, db_conn):
     return
   c = db_conn.cursor()
   # if cveid is not in CVE table, insert cveid info
-  if PoCinfo['CVE'] != 'None':
-    c.execute('SELECT * FROM CVE WHERE cveid = ?', (PoCinfo['CVE'],))
+  if PoCinfo['cve'] != 'None':
+    c.execute('SELECT * FROM CVE WHERE cveid = ?', (PoCinfo['cve'],))
     if not c.fetchone():
-      cveInfo = getCVEinfo(PoCinfo['CVE'])
+      cveInfo = getCVEinfo(PoCinfo['cve'])
       if cveInfo:
-        c.execute('INSERT INTO CVE VALUES (?, ?, ?, ?)', (PoCinfo['CVE'], cveInfo['CVSS'], cveInfo['CVSSAV'], ','.join(cveInfo['CWE'])))
+        c.execute('INSERT INTO CVE VALUES (?, ?, ?, ?)', (PoCinfo['cve'], cveInfo['CVSS'], cveInfo['CVSSAV'], ','.join(cveInfo['CWE'])))
         db_conn.commit()
   # if url is not in PoC table, insert PoC info and signatures
   c.execute('SELECT * FROM PoC WHERE url = ?', (PoCinfo['url'],))
   if not c.fetchone():
-    c.execute('INSERT INTO PoC VALUES (NULL, ?, ?, ?, ?, ?, ?)', (PoCinfo['CVE'], PoCinfo['url'], PoCinfo['path'], PoCinfo['description'], PoCinfo['created_at'], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    c.execute('INSERT INTO PoC VALUES (NULL, ?, ?, ?, ?, ?, ?)', (PoCinfo['cve'], PoCinfo['url'], PoCinfo['path'], PoCinfo['description'], PoCinfo['created_at'], datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
     db_conn.commit()
     # insert signatures
     if PoCinfo['signatures']:
@@ -128,9 +129,9 @@ def createPoCDB():
   # PoC: pocid, cveid, url, path, description, created_at, found_at 
   c.execute('CREATE TABLE PoC (pocid INTEGER PRIMARY KEY AUTOINCREMENT, cveid TEXT, url TEXT, path TEXT, description TEXT, created_at TEXT, found_at TEXT)')
   # CVE: cveid, CVSS, CVSSAV, CWE
-  c.execute('CREATE TABLE CVE (cveid TEXT PRIMARY KEY, CVSS REAL, CVSSAV TEXT, CWE TEXT)')
+  c.execute('CREATE TABLE CVE (cveid TEXT PRIMARY KEY, cvss REAL, cvssav TEXT, cwe TEXT)')
   # Signature: signature, pocid
-  c.execute('CREATE TABLE Signature (signature TEXT PRIMARY KEY, pocid INTEGER)')
+  c.execute('CREATE TABLE Signature (signature TEXT, pocid INTEGER)')
   # predicted: cveid, pocid, predicted_at
   c.execute('CREATE TABLE Predicted (cveid TEXT, pocid INTEGER, predicted_at TEXT)')
   conn.commit()
