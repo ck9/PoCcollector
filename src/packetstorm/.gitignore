@@ -1,2 +1,3 @@
 PoC-in-PacketStorm/
-PoC-in-PacketStorm.json
+*.json
+scripts/
