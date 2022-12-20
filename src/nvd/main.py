@@ -23,7 +23,7 @@ def getCVEinfo(cve):
             cveInfo["NVDpubdate"] = getNVDpubdate(NVDinfo)
             return cveInfo
     except FileNotFoundError:
-        print(f"{cve} NVD info not found (FileNotFoundError)")
+        # print(f"{cve} NVD info not found (FileNotFoundError)")
         return None
 
 def getCWE(NVDinfo):
