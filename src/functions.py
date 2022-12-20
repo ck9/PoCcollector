@@ -188,6 +188,6 @@ def cve2yaml(cve):
       print(f'[PoCList]\n' + '\n'.join(pocurls))
       signs.append('')
     memoStr = ', '.join(pocurls)
-    author =  ''
+    author =  'PoCanalyzer'
     obj = [{'author': author, 'condition': signs, 'memo': memoStr, 'name': cve, 'tag': cve}]
     return yaml.dump(obj)
