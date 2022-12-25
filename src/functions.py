@@ -11,7 +11,10 @@ def getSignFromPoC(codePath):
   pathList = []
   if not os.path.isfile(codePath):
     return pathList
-  with open(codePath, 'r') as f:
+  ext = os.path.splitext(codePath)[1]
+  if ext == '.zip' or ext == '.gz' or ext == '.tar' or ext == '.rar' or ext == '.tgz':
+    return pathList
+  with open(codePath, 'r', encoding="utf8", errors='ignore') as f:
     code = f.read()
     pattern = r'[\'"](\{\w+?\})*((\/[\w:%#\$&\?\(\)~\.=\+\-]+){2,})(\{\w+?\})*[\'"]'
     for line in code.splitlines():
