@@ -58,7 +58,7 @@ def update_pstorm():
           "url": PoCurl,
           "cve": cve,
           "description": description,
-          "created_at": date.strftime('%Y-%m-%dT%H:%M:%SZ'),
+          "created_at": date.strftime('%Y-%m-%d %H:%M:%S'),
           "file": filePath,
         }
       nv = soup('a', text='Next')
