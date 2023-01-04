@@ -54,6 +54,8 @@ def update_github():
         pbar.update(pCnt)
         if data['url'] in PoCurlList:
           continue
+        if 'Satheesh575555/' in data['full_name']:
+          continue
         PoCurlList.append(data['url'])
         PoCinfo = {
           "cve": cve,
