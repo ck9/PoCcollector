@@ -194,3 +194,20 @@ def cve2yaml(cve):
     author =  'PoCanalyzer'
     obj = [{'author': author, 'condition': signs, 'memo': memoStr, 'name': cve, 'tag': cve}]
     return yaml.dump(obj)
+
+def signSearch(sign, mode='fast'):
+  data = []
+  
+  db_conn = connectPoCDB()
+  c = db_conn.cursor()
+  c.execute('SELECT * FROM Signature WHERE signature LIKE ?', ('%' + sign + '%',) , "INNER JOIN PoC ON Signature.pocid = PoC.pocid")
+  for row in c.fetchall():
+    print(row)
+    # TODO rowの中身確認
+    data.append({'signature': row[0], 'pocid': row[0], 'cveid': row[1], 'url': row[3]})
+
+  if mode == 'all':
+    # TODO PoCファイルの中身を検索する
+    pass
+
+  return data
