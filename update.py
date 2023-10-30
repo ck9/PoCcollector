@@ -18,10 +18,13 @@ def update():
   print("  ## Update ##  ")
   updateDB()
   print("  ## Update Finished ##  ")
-  newCVEs = getnewPredictedPoC()
+  db_conn = connectPoCDB()
+  newCVEs = getnewPredictedPoC(db_conn)
   print(f"  ## New CVE: {len(newCVEs)} ##  ")
   for cve in newCVEs:
     print(cve)
     newCVEs[cve]["CVE-ID"] = cve
-    notifySlack(newCVEs[cve])
-    
+    # notifySlack(newCVEs[cve])
+
+if __name__ == "__main__":
+  update()

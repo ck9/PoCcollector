@@ -2,7 +2,7 @@ import os, re, json
 import sqlite3, requests, yaml
 from dotenv import load_dotenv
 from datetime import datetime
-from nvd.main import getCVEinfo
+from src.nvd.main import getCVEinfo
 
 thisPath = os.path.dirname(__file__)
 load_dotenv(os.path.join(thisPath, '../.env'))

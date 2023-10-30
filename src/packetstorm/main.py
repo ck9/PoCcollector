@@ -14,15 +14,16 @@ Myheader = {
 def update_pstorm():
   if not os.path.isdir(os.path.join(thisDir, 'PoC-in-PacketStorm')):
     os.mkdir(os.path.join(thisDir, 'PoC-in-PacketStorm'))
-  print("Downloading PoC from PacketStorm...")
-  html = requests.get('https://packetstormsecurity.com/files/tags/exploit/').text
-  max_page = int(re.findall(r'Page 1 of ([0-9,]+)', html)[0].replace(',', ''))
-  p = 1
   if os.path.isfile(os.path.join(thisDir, 'PoC-in-PacketStorm.json')):
     with open(os.path.join(thisDir, 'PoC-in-PacketStorm.json'), 'r') as f:
       PoCdata = json.load(f)
   else:
     PoCdata = {}
+  '''
+  print("Downloading PoC from PacketStorm...")
+  html = requests.get('https://packetstormsecurity.com/files/tags/exploit/').text
+  max_page = int(re.findall(r'Page 1 of ([0-9,]+)', html)[0].replace(',', ''))
+  p = 1
   with ProgressBar() as pbar:
     isFinish = False
     while isFinish == False:
@@ -83,6 +84,8 @@ def update_pstorm():
 
   with open(thisDir + '/PoC-in-PacketStorm.json', 'w') as f:
     json.dump(PoCdata, f, indent=2)
+
+  '''
   
   # insert new PoC data to DB
   db_conn = connectPoCDB()
@@ -104,5 +107,5 @@ def update_pstorm():
         "created_at": PoC['created_at'],
         "signatures": getSignFromPoC(PoC['file'])
       }
-      insertPoCDB(db_conn, PoCinfo)
+      insertPoCDB(PoCinfo, db_conn)
   closePoCDB(db_conn)
